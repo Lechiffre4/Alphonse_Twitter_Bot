@@ -22,6 +22,7 @@ while (connectResult == "error"):
 
     except:
         connectResult = "error"
+        print("Error while connection (restarting)")
 
 
 result="tweet error"
@@ -33,6 +34,7 @@ while (result == "tweet error"):
 
     except:
         result = "tweet error"
+        print("Error while sending tweet (restarting)")
 
 
 
