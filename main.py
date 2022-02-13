@@ -1,6 +1,7 @@
 import tweepy
 from decouple import config
 from random_word import RandomWords
+import openai
 
 
 #API token ( Elevated access required)
@@ -17,13 +18,21 @@ try:
 except:
     print("Something went wrong")
 
-#function to create and send a tweet
-def CreateTweet():
-    r = RandomWords()
-    word= r.get_random_word()
-    api.update_status("Life is "+ word)
+def CreateTweet(text):
+    api.update_status(text)
 
-CreateTweet()
+
+def gpt3Generate():
+    openai.api_key = config("GPT_KEY")
+    response = openai.Completion.create(
+        engine="ada",
+        prompt="tweet something cool #technology",
+        max_tokens = 64
+    )
+    content = response.choices[0].text
+    return content
+
+CreateTweet(gpt3Generate())
 
 
 
