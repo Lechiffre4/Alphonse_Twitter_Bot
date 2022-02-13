@@ -2,6 +2,8 @@ import tweepy
 from decouple import config
 from random_word import RandomWords
 import openai
+import hashtaglist
+import random
 
 
 #API token ( Elevated access required)
@@ -18,7 +20,11 @@ api = tweepy.API(auth)
 def CreateRandomTweet():
     r = RandomWords()
     word= r.get_random_word()
-    api.update_status("Life is "+ word)
+    firsthash = hashtaglist.hashtags[random.randint(0,len(hashtaglist.hashtags))]
+    secondhash = hashtaglist.hashtags[random.randint(0,len(hashtaglist.hashtags))]
+    while(firsthash == secondhash):
+        secondhash = hashtaglist.hashtags[random.randint(0,len(hashtaglist.hashtags))]
+    api.update_status("Life is "+ word+ "  "+firsthash+" "+ secondhash)
 
 
 def CreateTweet(text):
