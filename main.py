@@ -38,6 +38,19 @@ while (result == "tweet error"):
 
 
 
+resultRandomtweet= "tweet error"
+while (resultRandomtweet == "tweet error"):
+    try:
+        function.CreateRandomTweet()
+        resultRandomtweet = "tweet ok"
+        print("Life is ... tweet sent!")
+
+    except:
+        resultRandomtweet = "tweet error"
+        print("Error while sending life is ... tweet (restarting)")
+
+
+
 
 
 
