@@ -1,6 +1,8 @@
 import tweepy
 from decouple import config
+from random_word import RandomWords
 import openai
+import function
 
 
 #API token ( Elevated access required)
@@ -10,29 +12,30 @@ auth.set_access_token(config('ACCESS_TOKEN'),config('ACCESS_TOKEN_SECRET'))
 #connection
 api = tweepy.API(auth)
 
+connectResult = "error"
 #try if the api works
-try:
-    api.verify_credentials()
-    print("everything works")
-except:
-    print("Something went wrong")
+while (connectResult == "error"):
+    try:
+        api.verify_credentials()
+        connectResult = "ok"
+
+    except:
+        connectResult = "error"
 
 
-def CreateTweet(text):
-    api.update_status(text)
+result="tweet error"
+while (result == "tweet error"):
+    try:
+        function.CreateTweet(function.gpt3())
+        result = "tweet ok"
+
+    except:
+        result = "tweet error"
 
 
-def gpt3():
-    openai.api_key = config("GPT_KEY")
-    response = openai.Completion.create(
-        engine="ada",
-        prompt="tweet something cool #technology",
-        max_tokens = 64
-    )
-    content = response.choices[0].text
-    return content
 
-CreateTweet(gpt3())
+
+
 
 
 
