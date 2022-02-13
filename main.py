@@ -18,6 +18,7 @@ while (connectResult == "error"):
     try:
         api.verify_credentials()
         connectResult = "ok"
+        print("Connection works")
 
     except:
         connectResult = "error"
@@ -28,6 +29,7 @@ while (result == "tweet error"):
     try:
         function.CreateTweet(function.gpt3())
         result = "tweet ok"
+        print("tweet sent!")
 
     except:
         result = "tweet error"
