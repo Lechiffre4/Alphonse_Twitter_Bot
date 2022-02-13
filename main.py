@@ -25,6 +25,8 @@ while (connectResult == "error"):
         print("Error while connection (restarting)")
 
 
+#Tweet with GPT3 desactivated
+"""
 result="tweet error"
 while (result == "tweet error"):
     try:
@@ -35,7 +37,7 @@ while (result == "tweet error"):
     except:
         result = "tweet error"
         print("Error while sending tweet (restarting)")
-
+"""
 
 
 resultRandomtweet= "tweet error"
