@@ -17,11 +17,12 @@ try:
 except:
     print("Something went wrong")
 
+
 def CreateTweet(text):
     api.update_status(text)
 
 
-def gpt3Generate():
+def gpt3():
     openai.api_key = config("GPT_KEY")
     response = openai.Completion.create(
         engine="ada",
@@ -31,7 +32,7 @@ def gpt3Generate():
     content = response.choices[0].text
     return content
 
-CreateTweet(gpt3Generate())
+CreateTweet(gpt3())
 
 
 
