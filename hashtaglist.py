@@ -12,5 +12,9 @@ hashtags = [
     "#love",
     "#peace",
     "#justice",
-    "#blm"
+    "#blm",
+    "#mindset",
+    "#alpha",
+    "#chadlord",
+    "#alphamindset"
 ]
