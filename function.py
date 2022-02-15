@@ -4,6 +4,8 @@ from random_word import RandomWords
 import openai
 import hashtaglist
 import random
+import json
+import geocoder
 
 
 #API token ( Elevated access required)
@@ -12,7 +14,6 @@ auth.set_access_token(config('ACCESS_TOKEN'),config('ACCESS_TOKEN_SECRET'))
 
 #connection
 api = tweepy.API(auth)
-
 
 
 
@@ -30,13 +31,21 @@ def CreateRandomTweet():
 def CreateTweet(text):
     api.update_status(text)
 
+def getTrends():
+    geo = "France"
+    hashtags_trend = []
+    geo = geocoder.osm(geo)
 
-def gpt3():
-    openai.api_key = config("GPT_KEY")
-    response = openai.Completion.create(
-        engine="davinci",
-        prompt= "tweet something cool about tecchnology #technology",
-        max_tokens = 50
-    )
-    content = response.choices[0].text
-    return content
+    closest_loc = api.closest_trends(geo.lat, geo.lng)
+    trends = api.get_place_trends(closest_loc[0]["woeid"])
+    trends = trends[0]
+    trends = trends["trends"]
+
+    for trend in trends:
+        hashtags_trend.append(trend["name"])
+
+
+    print(hashtags_trend)
+    return hashtags_trend
+
+getTrends()

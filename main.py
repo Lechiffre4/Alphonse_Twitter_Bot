@@ -25,20 +25,6 @@ while (connectResult == "error"):
         print("Error while connection (restarting)")
 
 
-#Tweet with GPT3 desactivated
-"""
-result="tweet error"
-while (result == "tweet error"):
-    try:
-        function.CreateTweet(function.gpt3())
-        result = "tweet ok"
-        print("tweet sent!")
-
-    except:
-        result = "tweet error"
-        print("Error while sending tweet (restarting)")
-"""
-
 
 resultRandomtweet= "tweet error"
 while (resultRandomtweet == "tweet error"):
