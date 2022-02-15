@@ -1,7 +1,6 @@
 import tweepy
 from decouple import config
 from random_word import RandomWords
-import openai
 import function
 
 
