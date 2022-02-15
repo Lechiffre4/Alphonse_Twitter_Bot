@@ -6,6 +6,7 @@ import hashtaglist
 import random
 import json
 import geocoder
+from datetime import datetime, timedelta
 
 
 #API token ( Elevated access required)
@@ -31,7 +32,7 @@ def CreateRandomTweet():
 def CreateTweet(text):
     api.update_status(text)
 
-def getTrends():
+def getAllTrends():
     geo = "France"
     hashtags_trend = []
     geo = geocoder.osm(geo)
@@ -45,7 +46,20 @@ def getTrends():
         hashtags_trend.append(trend["name"])
 
 
-    print(hashtags_trend)
     return hashtags_trend
 
-getTrends()
+def yesterday(string=False, frmt='%Y-%m-%d'):
+    yesterday = datetime.now() - timedelta(1)
+    if string:
+        return yesterday.strftime(frmt)
+    return yesterday
+
+def getTextinTrend(trend_name):
+
+    tweets = tweepy.Cursor(api.search_tweets,
+              q=trend_name,
+              lang="en").items(5)
+
+    for tweet in tweets:
+        print(tweet.text)
+    return tweets
