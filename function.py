@@ -5,7 +5,9 @@ import hashtaglist
 import random
 import json
 import geocoder
-from datetime import datetime, timedelta
+from textblob import TextBlob
+
+
 
 
 #API token ( Elevated access required)
@@ -47,18 +49,19 @@ def getAllTrends():
 
     return hashtags_trend
 
-def yesterday(string=False, frmt='%Y-%m-%d'):
-    yesterday = datetime.now() - timedelta(1)
-    if string:
-        return yesterday.strftime(frmt)
-    return yesterday
-
 def getTextinTrend(trend_name):
-
+    tweettext = []
     tweets = tweepy.Cursor(api.search_tweets,
               q=trend_name,
-              lang="en").items(5)
+              lang="en").items(100)
 
     for tweet in tweets:
-        print(tweet.text)
-    return tweets
+        tweettext.append(tweet.text)
+
+    tweettext = "".join(tweettext)
+    return tweettext
+
+search = "#chocolat"
+blob = TextBlob(getTextinTrend(search))
+sentiment = blob.sentiment.polarity
+print(search+": "+ str(sentiment))
