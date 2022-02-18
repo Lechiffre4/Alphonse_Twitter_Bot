@@ -7,6 +7,7 @@ import json
 import geocoder
 from textblob import TextBlob
 import re
+import time
 
 
 
@@ -54,7 +55,7 @@ def getTextinTrend(trend_name):
     tweettext = []
     tweets = tweepy.Cursor(api.search_tweets,
               q=trend_name,
-              lang="en").items(250)
+              lang="en").items(100)
 
     for tweet in tweets:
         result = re.sub(r"http\S+", "", tweet.text)
@@ -66,7 +67,6 @@ def getTextinTrend(trend_name):
 
 def getSentimentFromHashtags(hashtag):
     text = getTextinTrend(hashtag)
-    print(text)
     blob = TextBlob(text)
     sentiment = blob.sentiment.polarity # value between -1 and 1
     print(hashtag+": "+ str(sentiment))
@@ -74,16 +74,18 @@ def getSentimentFromHashtags(hashtag):
 
 def interpretPolarity(polarity):
     sentiment = None
-    if(polarity>=0.6):
+    if(polarity == 0):
+        print("Rien à signaler sur le hashtag")
+    elif(polarity>=0.5):
         print("peace")
     elif(polarity<=0.5 and polarity>0.4):
         print("happy conversations")
     elif(polarity<=0.4 and polarity>0.3):
         print("normal conversation")
     elif(polarity<=0.3 and polarity>0.2):
-        print("became titled")
+        print("became tilted")
     elif(polarity<=0.2 and polarity>0.1):
-        print("titled")
+        print("tilted")
     elif(polarity<=0.1 and polarity>0):
         print("dangerous")
     elif(polarity<=0 and polarity> -0.1):
@@ -92,8 +94,35 @@ def interpretPolarity(polarity):
         print("cursed topic")
     elif(polarity<= -0.4):
         print("anarchy")
+    print("end")
 
-interpretPolarity(getSentimentFromHashtags("#blm"))
+
+def reply():
+    bot_id = int(api.verify_credentials().id_str)
+    mention_id = 1
+
+    message = "Here I am"
+    while True:
+        mentions = api.mentions_timeline(since_id=mention_id)
+        for mention in mentions:
+            print("Mention Tweet Found!")
+            print(f"{mention.author.screen_name} - {mention.text}")
+            mention_id = mention.id
+            if mention.in_reply_to_status_id is None and mention.author.id != bot_id:
+                try:
+                    print("Attempting Reply...")
+                    api.update_status(message.format(mention.author.screen_name), in_reply_to_status_id=mention.id_str)
+                    print("Successfully replies :")
+                except Exception as e:
+                    print(e)
+
+        time.sleep(15)
+
+reply()
+
+
+
+
 
 
     
