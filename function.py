@@ -76,26 +76,38 @@ def interpretPolarity(polarity):
     sentiment = None
     if(polarity == 0):
         print("Rien à signaler sur le hashtag")
+        sentiment = "null"
     elif(polarity>=0.5):
         print("peace")
+        sentiment = "peace"
     elif(polarity<=0.5 and polarity>0.4):
         print("happy conversations")
+        sentiment = "happy"
     elif(polarity<=0.4 and polarity>0.3):
         print("normal conversation")
+        sentiment = "normal"
     elif(polarity<=0.3 and polarity>0.2):
         print("became tilted")
+        sentiment = "tense"
     elif(polarity<=0.2 and polarity>0.1):
         print("tilted")
+        sentiment = "tilted"
     elif(polarity<=0.1 and polarity>0):
         print("dangerous")
+        sentiment = "dangerous"
     elif(polarity<=0 and polarity> -0.1):
         print("hardcore")
+        sentiment = "hard"
     elif(polarity<= -0.1 and polarity> -0.4):
         print("cursed topic")
+        sentiment = "cursed"
     elif(polarity<= -0.4):
         print("anarchy")
-    print("end")
+        sentiment = "anarchy"
+    return sentiment
 
+def extract_hash_tags(s):
+    return set(part[1:] for part in s.split() if part.startswith('#'))
 
 def reply():
     bot_id = int(api.verify_credentials().id_str)
@@ -108,6 +120,14 @@ def reply():
             print("Mention Tweet Found!")
             print(f"{mention.author.screen_name} - {mention.text}")
             mention_id = mention.id
+            targeted_hashtag = extract_hash_tags(mention.text)
+            if (len(targeted_hashtag)>1):
+                targeted_hashtag = targeted_hashtag[0]
+            
+            #check if the the tweet contain hashtag
+            getSentimentFromHashtags(targeted_hashtag)
+
+
             if mention.in_reply_to_status_id is None and mention.author.id != bot_id:
                 try:
                     print("Attempting Reply...")
