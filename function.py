@@ -1,3 +1,4 @@
+from matplotlib.font_manager import json_dump
 import tweepy
 from decouple import config
 from random_word import RandomWords
@@ -8,7 +9,6 @@ import geocoder
 from textblob import TextBlob
 import re
 import time
-
 
 
 
@@ -106,40 +106,72 @@ def interpretPolarity(polarity):
         sentiment = "anarchy"
     return sentiment
 
-def extract_hash_tags(s):
-    return set(part[1:] for part in s.split() if part.startswith('#'))
+def extract_hashtags(s):
+    hashtag_set = set(part[1:] for part in s.split() if part.startswith('#'))
+    return list(hashtag_set)
+
 
 def reply():
-    bot_id = int(api.verify_credentials().id_str)
-    mention_id = 1
+    #open the id save
+    json_save = open("mention.json",'r+')
+    json_obj = json.load(json_save)
+    
 
-    message = "Here I am"
+
+    bot_id = int(api.verify_credentials().id_str)
+    mention_id = json_obj["id"]
+
+    
     while True:
         mentions = api.mentions_timeline(since_id=mention_id)
         for mention in mentions:
+            #printing the message found
             print("Mention Tweet Found!")
             print(f"{mention.author.screen_name} - {mention.text}")
+            #######################################################
+
+
+
+            #save the id of the tweet and override in the json save
             mention_id = mention.id
-            targeted_hashtag = extract_hash_tags(mention.text)
-            if (len(targeted_hashtag)>1):
+            json_obj["id"] = mention_id
+            json_save.seek(0)
+            json_save.write(json.dumps(json_obj))
+            #######################################################
+
+
+            targeted_hashtag = extract_hashtags(mention.text)
+
+            #If the tweet doesn't contain hashtags
+            if (len(targeted_hashtag)<=0):
+                message = "Your tweet doesn't contain hashtags. Tell me the hashtag that you want to analyse."
+                if mention.in_reply_to_status_id is None and mention.author.id != bot_id:
+                    try:
+                        print("Attempting Reply...")
+                        api.update_status(message.format(mention.author.screen_name), in_reply_to_status_id=mention.id_str)
+                        print("Successfully replies :")
+                    except Exception as e:
+                        print(e)
+
+            #if the tweet contain hashtags
+            elif(len(targeted_hashtag)>=1):
                 targeted_hashtag = targeted_hashtag[0]
-            
-            #check if the the tweet contain hashtag
-            getSentimentFromHashtags(targeted_hashtag)
+                #check if the the tweet contain hashtag
+                message = interpretPolarity(getSentimentFromHashtags(targeted_hashtag))
+                if mention.in_reply_to_status_id is None and mention.author.id != bot_id:
+                    try:
+                        print("Attempting Reply...")
+                        api.update_status(message.format(mention.author.screen_name), in_reply_to_status_id=mention.id_str)
+                        print("Successfully replies :")
+                    except Exception as e:
+                        print(e)
 
-
-            if mention.in_reply_to_status_id is None and mention.author.id != bot_id:
-                try:
-                    print("Attempting Reply...")
-                    api.update_status(message.format(mention.author.screen_name), in_reply_to_status_id=mention.id_str)
-                    print("Successfully replies :")
-                except Exception as e:
-                    print(e)
-
+        
         time.sleep(15)
 
-reply()
+    json_save.close()
 
+reply()
 
 
 
