@@ -1,11 +1,9 @@
-
 import tweepy
 from decouple import config
 from random_word import RandomWords
 import hashtaglist
 import random
 import json
-import geocoder
 from textblob import TextBlob
 import re
 import time
@@ -36,21 +34,6 @@ def CreateRandomTweet():
 def CreateTweet(text):
     api.update_status(text)
 
-def getAllTrends():
-    geo = "France"
-    hashtags_trend = []
-    geo = geocoder.osm(geo)
-
-    closest_loc = api.closest_trends(geo.lat, geo.lng)
-    trends = api.get_place_trends(closest_loc[0]["woeid"])
-    trends = trends[0]
-    trends = trends["trends"]
-
-    for trend in trends:
-        hashtags_trend.append(trend["name"])
-
-
-    return hashtags_trend
 
 def getTextinTrend(trend_name):
     tweettext = []
