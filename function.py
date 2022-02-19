@@ -1,4 +1,4 @@
-from matplotlib.font_manager import json_dump
+
 import tweepy
 from decouple import config
 from random_word import RandomWords
