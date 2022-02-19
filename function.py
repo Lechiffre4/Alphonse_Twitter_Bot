@@ -148,8 +148,8 @@ def reply():
                 if mention.in_reply_to_status_id is None and mention.author.id != bot_id:
                     try:
                         print("Attempting Reply...")
-                        api.update_status(message.format(mention.author.screen_name), in_reply_to_status_id=mention.id_str)
-                        print("Successfully replies :")
+                        api.update_status(message.format(mention.author.screen_name), in_reply_to_status_id=json_obj["id"], auto_populate_reply_metadata=True)
+                        print("Successfully replies")
                     except Exception as e:
                         print(e)
 
@@ -161,8 +161,8 @@ def reply():
                 if mention.in_reply_to_status_id is None and mention.author.id != bot_id:
                     try:
                         print("Attempting Reply...")
-                        api.update_status(message.format(mention.author.screen_name), in_reply_to_status_id=mention.id_str)
-                        print("Successfully replies :")
+                        api.update_status(message.format(mention.author.screen_name), in_reply_to_status_id=json_obj["id"], auto_populate_reply_metadata=True)
+                        print("Successfully replies")
                     except Exception as e:
                         print(e)
 
