@@ -9,6 +9,7 @@ import geocoder
 from textblob import TextBlob
 import re
 import time
+import sentences
 
 
 
@@ -76,34 +77,34 @@ def interpretPolarity(polarity):
     sentiment = None
     if(polarity == 0):
         print("Rien à signaler sur le hashtag")
-        sentiment = "null"
+        sentiment = sentences.null[random.randint(0,len(sentences.null)-1)]
     elif(polarity>=0.5):
         print("peace")
-        sentiment = "peace"
+        sentiment = sentences.peace[random.randint(0,len(sentences.null)-1)]
     elif(polarity<=0.5 and polarity>0.4):
         print("happy conversations")
-        sentiment = "happy"
+        sentiment = sentences.happy[random.randint(0,len(sentences.null)-1)]
     elif(polarity<=0.4 and polarity>0.3):
         print("normal conversation")
-        sentiment = "normal"
+        sentiment = sentences.normal[random.randint(0,len(sentences.null)-1)]
     elif(polarity<=0.3 and polarity>0.2):
         print("became tilted")
-        sentiment = "tense"
+        sentiment = sentences.became_tilted[random.randint(0,len(sentences.null)-1)]
     elif(polarity<=0.2 and polarity>0.1):
         print("tilted")
-        sentiment = "tilted"
+        sentiment = sentences.tilted[random.randint(0,len(sentences.null)-1)]
     elif(polarity<=0.1 and polarity>0):
         print("dangerous")
-        sentiment = "dangerous"
+        sentiment = sentences.dangerous[random.randint(0,len(sentences.null)-1)]
     elif(polarity<=0 and polarity> -0.1):
         print("hardcore")
-        sentiment = "hard"
+        sentiment = sentences.hard[random.randint(0,len(sentences.null)-1)]
     elif(polarity<= -0.1 and polarity> -0.4):
         print("cursed topic")
-        sentiment = "cursed"
+        sentiment = sentences.cursed[random.randint(0,len(sentences.null)-1)]
     elif(polarity<= -0.4):
         print("anarchy")
-        sentiment = "anarchy"
+        sentiment = sentences.anarchy[random.randint(0,len(sentences.null)-1)]
     return sentiment
 
 def extract_hashtags(s):
@@ -172,7 +173,6 @@ def reply():
 
     json_save.close()
 
-reply()
 
 
 
