@@ -1,0 +1,6 @@
+null = ["The hashtag is currently inactive", "This topic may doesn't exist", "nothing to report on this topic"]
+peace = ["Nothing is better than this topic", "Everybody is wholesome in this hashtag","Wow, peace reigns over this hashtag"]
+happy = ["Everybody is happy on this topic", "Only joy and happiness on this hashtag","What a happy topic"]
+normal = ["People communicate normally", "Nothing special here", "People are regular human beings"]
+became_tilted = ["This topic became more and more tilted","take out popcorn","Twitter gladiators enter the arena"]
+tilted = ["The insults begin to emerge","Get on board the clowny train","they may be a little nervous"]

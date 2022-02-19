@@ -156,7 +156,8 @@ def reply():
             #if the tweet contain hashtags
             elif(len(targeted_hashtag)>=1):
                 targeted_hashtag = targeted_hashtag[0]
-                #check if the the tweet contain hashtag
+                
+                #choose the message
                 message = interpretPolarity(getSentimentFromHashtags(targeted_hashtag))
                 if mention.in_reply_to_status_id is None and mention.author.id != bot_id:
                     try:
