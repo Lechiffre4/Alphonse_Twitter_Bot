@@ -8,27 +8,26 @@ from textblob import TextBlob
 import re
 import time
 import sentences
+import os
 
 
+# API token ( Elevated access required)
+auth = tweepy.OAuthHandler(config("CONSUMER_API_KEY"), config("CONSUMER_API_SECRET"))
+auth.set_access_token(config("ACCESS_TOKEN"), config("ACCESS_TOKEN_SECRET"))
 
-#API token ( Elevated access required)
-auth = tweepy.OAuthHandler(config('CONSUMER_API_KEY'),config('CONSUMER_API_SECRET'))
-auth.set_access_token(config('ACCESS_TOKEN'),config('ACCESS_TOKEN_SECRET'))
-
-#connection
+# connection
 api = tweepy.API(auth)
 
 
-
-#function to create and send a tweet
+# function to create and send a tweet
 def CreateRandomTweet():
     r = RandomWords()
-    word= r.get_random_word()
-    firsthash = hashtaglist.hashtags[random.randint(0,len(hashtaglist.hashtags))]
-    secondhash = hashtaglist.hashtags[random.randint(0,len(hashtaglist.hashtags))]
-    while(firsthash == secondhash):
-        secondhash = hashtaglist.hashtags[random.randint(0,len(hashtaglist.hashtags))]
-    api.update_status("Life is "+ word+ "  "+firsthash+" "+ secondhash)
+    word = r.get_random_word()
+    firsthash = hashtaglist.hashtags[random.randint(0, len(hashtaglist.hashtags))]
+    secondhash = hashtaglist.hashtags[random.randint(0, len(hashtaglist.hashtags))]
+    while firsthash == secondhash:
+        secondhash = hashtaglist.hashtags[random.randint(0, len(hashtaglist.hashtags))]
+    api.update_status("Life is " + word + "  " + firsthash + " " + secondhash)
 
 
 def CreateTweet(text):
@@ -37,9 +36,7 @@ def CreateTweet(text):
 
 def getTextinTrend(trend_name):
     tweettext = []
-    tweets = tweepy.Cursor(api.search_tweets,
-              q=trend_name,
-              lang="en").items(100)
+    tweets = tweepy.Cursor(api.search_tweets, q=trend_name, lang="en").items(100)
 
     for tweet in tweets:
         result = re.sub(r"http\S+", "", tweet.text)
@@ -52,60 +49,60 @@ def getTextinTrend(trend_name):
 def getSentimentFromHashtags(hashtag):
     text = getTextinTrend(hashtag)
     blob = TextBlob(text)
-    sentiment = blob.sentiment.polarity # value between -1 and 1
-    print(hashtag+": "+ str(sentiment))
+    sentiment = blob.sentiment.polarity  # value between -1 and 1
+    print(hashtag + ": " + str(sentiment))
     return sentiment
+
 
 def interpretPolarity(polarity):
     sentiment = None
-    if(polarity == 0):
+    if polarity == 0:
         print("Rien à signaler sur le hashtag")
-        sentiment = sentences.null[random.randint(0,len(sentences.null)-1)]
-    elif(polarity>=0.5):
+        sentiment = sentences.null[random.randint(0, len(sentences.null) - 1)]
+    elif polarity >= 0.5:
         print("peace")
-        sentiment = sentences.peace[random.randint(0,len(sentences.null)-1)]
-    elif(polarity<=0.5 and polarity>0.4):
+        sentiment = sentences.peace[random.randint(0, len(sentences.null) - 1)]
+    elif polarity <= 0.5 and polarity > 0.4:
         print("happy conversations")
-        sentiment = sentences.happy[random.randint(0,len(sentences.null)-1)]
-    elif(polarity<=0.4 and polarity>0.3):
+        sentiment = sentences.happy[random.randint(0, len(sentences.null) - 1)]
+    elif polarity <= 0.4 and polarity > 0.3:
         print("normal conversation")
-        sentiment = sentences.normal[random.randint(0,len(sentences.null)-1)]
-    elif(polarity<=0.3 and polarity>0.2):
+        sentiment = sentences.normal[random.randint(0, len(sentences.null) - 1)]
+    elif polarity <= 0.3 and polarity > 0.2:
         print("became tilted")
-        sentiment = sentences.became_tilted[random.randint(0,len(sentences.null)-1)]
-    elif(polarity<=0.2 and polarity>0.1):
+        sentiment = sentences.became_tilted[random.randint(0, len(sentences.null) - 1)]
+    elif polarity <= 0.2 and polarity > 0.1:
         print("tilted")
-        sentiment = sentences.tilted[random.randint(0,len(sentences.null)-1)]
-    elif(polarity<=0.1 and polarity>0):
+        sentiment = sentences.tilted[random.randint(0, len(sentences.null) - 1)]
+    elif polarity <= 0.1 and polarity > 0:
         print("dangerous")
-        sentiment = sentences.dangerous[random.randint(0,len(sentences.null)-1)]
-    elif(polarity<=0 and polarity> -0.1):
+        sentiment = sentences.dangerous[random.randint(0, len(sentences.null) - 1)]
+    elif polarity <= 0 and polarity > -0.1:
         print("hardcore")
-        sentiment = sentences.hard[random.randint(0,len(sentences.null)-1)]
-    elif(polarity<= -0.1 and polarity> -0.4):
+        sentiment = sentences.hard[random.randint(0, len(sentences.null) - 1)]
+    elif polarity <= -0.1 and polarity > -0.4:
         print("cursed topic")
-        sentiment = sentences.cursed[random.randint(0,len(sentences.null)-1)]
-    elif(polarity<= -0.4):
+        sentiment = sentences.cursed[random.randint(0, len(sentences.null) - 1)]
+    elif polarity <= -0.4:
         print("anarchy")
-        sentiment = sentences.anarchy[random.randint(0,len(sentences.null)-1)]
+        sentiment = sentences.anarchy[random.randint(0, len(sentences.null) - 1)]
     return sentiment
 
+
 def extract_hashtags(s):
-    hashtag_set = set(part[1:] for part in s.split() if part.startswith('#'))
+    hashtag_set = set(part[1:] for part in s.split() if part.startswith("#"))
     return list(hashtag_set)
 
 
 def reply():
-    #open the id save
-    json_save = open("mention.json",'r+')
+    # open the id save
+    dirname = os.path.dirname(__file__)
+    json_save = open(os.path.join(dirname, "mention.json"), "r+")
     json_obj = json.load(json_save)
-    
-
 
     bot_id = int(api.verify_credentials().id_str)
     mention_id = json_obj["id"]
 
-    
     while True:
         mentions = api.mentions_timeline(since_id=mention_id)
         if len(mentions) != 0:
@@ -157,10 +154,3 @@ def reply():
             print("no mentions")
             time.sleep(25)
     json_save.close()
-
-
-
-
-
-
-    
