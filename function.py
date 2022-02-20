@@ -108,52 +108,54 @@ def reply():
     
     while True:
         mentions = api.mentions_timeline(since_id=mention_id)
-        for mention in mentions:
-            #printing the message found
-            print("Mention Tweet Found!")
-            print(f"{mention.author.screen_name} - {mention.text}")
-            #######################################################
+        if len(mentions) != 0:
+            for mention in mentions:
+                #printing the message found
+                print("Mention Tweet Found!")
+                print(f"{mention.author.screen_name} - {mention.text}")
+                #######################################################
 
 
 
-            #save the id of the tweet and override in the json save
-            mention_id = mention.id
-            json_obj["id"] = mention_id
-            json_save.seek(0)
-            json_save.write(json.dumps(json_obj))
-            #######################################################
+                #save the id of the tweet and override in the json save
+                mention_id = mention.id
+                json_obj["id"] = mention_id
+                json_save.seek(0)
+                json_save.write(json.dumps(json_obj))
+                #######################################################
 
 
-            targeted_hashtag = extract_hashtags(mention.text)
+                targeted_hashtag = extract_hashtags(mention.text)
 
-            #If the tweet doesn't contain hashtags
-            if (len(targeted_hashtag)<=0):
-                message = "Your tweet doesn't contain hashtags. Tell me the hashtag that you want to analyse."
-                if mention.in_reply_to_status_id is None and mention.author.id != bot_id:
-                    try:
-                        print("Attempting Reply...")
-                        api.update_status(message.format(mention.author.screen_name), in_reply_to_status_id=json_obj["id"], auto_populate_reply_metadata=True)
-                        print("Successfully replies")
-                    except Exception as e:
-                        print(e)
+                #If the tweet doesn't contain hashtags
+                if (len(targeted_hashtag)<=0):
+                    message = "Your tweet doesn't contain hashtags. Tell me the hashtag that you want to analyse."
+                    if mention.in_reply_to_status_id is None and mention.author.id != bot_id:
+                        try:
+                            print("Attempting Reply...")
+                            api.update_status(message.format(mention.author.screen_name), in_reply_to_status_id=json_obj["id"], auto_populate_reply_metadata=True)
+                            print("Successfully replies")
+                        except Exception as e:
+                            print(e)
 
-            #if the tweet contain hashtags
-            elif(len(targeted_hashtag)>=1):
-                targeted_hashtag = targeted_hashtag[0]
-                
-                #choose the message
-                message = interpretPolarity(getSentimentFromHashtags(targeted_hashtag))
-                if mention.in_reply_to_status_id is None and mention.author.id != bot_id:
-                    try:
-                        print("Attempting Reply...")
-                        api.update_status(message.format(mention.author.screen_name), in_reply_to_status_id=json_obj["id"], auto_populate_reply_metadata=True)
-                        print("Successfully replies")
-                    except Exception as e:
-                        print(e)
+                #if the tweet contain hashtags
+                elif(len(targeted_hashtag)>=1):
+                    targeted_hashtag = targeted_hashtag[0]
 
+                    #choose the message
+                    if mention.in_reply_to_status_id is None and mention.author.id != bot_id:
+                        try:
+                            print("Attempting Reply...")
+                            message = interpretPolarity(getSentimentFromHashtags(targeted_hashtag))
+                            api.update_status(message.format(mention.author.screen_name), in_reply_to_status_id=json_obj["id"], auto_populate_reply_metadata=True)
+                            print("Successfully replies")
+                        except Exception as e:
+                            print(e)
         
-        time.sleep(15)
-
+            time.sleep(25)
+        else:
+            print("no mentions")
+            time.sleep(25)
     json_save.close()
 
 
