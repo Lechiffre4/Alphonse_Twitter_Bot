@@ -9,3 +9,15 @@ Fonctionnalités :
 Technologie utilisé: 
     - Module Tweepy avec l'API étendu de Twitter
     - Module NLTK de reconnaissance de sentiment à partir de texte
+
+
+Exemples de tweets : 
+
+##Life is ... 
+<img src="./images/lifeis.jpg">
+
+
+##Reply 
+<img src="./images/reply.jpg">
+
+
